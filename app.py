@@ -5,15 +5,17 @@ import re
 # globals
 __pattern = re.compile(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
 
+# check if ip is valid
 def is_valid_id(id: str, pattern: re.Pattern) -> bool:
     return bool(pattern.match(id))
 
+# check if condition is met, show error message and call a function if not
 def control(condition: bool, onError, msg: str) -> None:
     if condition:
         st.error(msg)
         onError()
 
-# header area
+# header areal
 st.header("IPv4 Subnet Calculator")
 
 # input form

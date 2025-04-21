@@ -20,18 +20,21 @@ class IPv4:
     def get_prefix(self) -> int:
         return self.prefix
 
+    # returns a specified octet
     def get_bin_octet(self, idx: int) -> str:
         if idx >= 0 and idx < 4:
             return "{0:08b}".format(int(self.octet_list[idx], base=10))
         else:
             raise IndexError("Index out of range of ipv4: 0 - 3")
     
+    # returns ip in binary
     def get_bin_ip(self):
         parts = []
         for e in self.octet_list:
             parts.append("{0:08b}".format(int(e)))
         return parts
     
+    # return Net ID of current IP-Address
     def get_net_id(self) -> str:
         mask = self.get_bin_mask()
         idOctets = ""
@@ -41,12 +44,14 @@ class IPv4:
                 idOctets += "."
         return idOctets
     
+    # return Net ID of current IP in binary
     def get_net_id_bin(self) -> list[str]:
         net_id = self.get_net_id().split(".")
         for idx, oct in enumerate(net_id):
             net_id[idx] = "{0:08b}".format(int(oct))
         return net_id
     
+    # return subnetmask as binary
     def get_bin_mask(self) -> list[str]:
         zeros = self.__bitlength - self.prefix
         netmask = self.prefix
@@ -64,6 +69,7 @@ class IPv4:
                 octet = ""
         return convertedMask
     
+    # return subnet mask in decimal form
     def get_dec_mask(self) -> str:
         mask = self.get_bin_mask()
         mask_octets = ""
@@ -73,15 +79,21 @@ class IPv4:
                 mask_octets += "."
         return mask_octets
     
+    # return the number of ip addresses in the given Network
+    # including NET-ID and Broadcast
     def get_current_net_size(self) -> int:
         return 2 ** (self.__bitlength - self.get_prefix())
     
+    # return the number of ip addresses in the target Network
+    # including NET-ID and Broadcast
     def get_target_net_size(self, target_prefix: int) -> int:
         return 2 ** (self.__bitlength - target_prefix)
     
+    # retun number of subnets created when switching from current to target prefix
     def get_no_of_subnets(self, target_prefix: int) -> int:
         return int(self.get_current_net_size() / self.get_target_net_size(target_prefix=target_prefix))
     
+    # return given prefix to binary subnet mask
     def convert_prefix_to_bin(self, mask: int) -> list[str]:
         zeros = self.__bitlength - mask
         convertedMask = []
@@ -98,6 +110,7 @@ class IPv4:
                 octet = ""
         return convertedMask
 
+    # returns a list of subnets given a IP address, prefix and target prefix
     def subnet(self, target_prefix: int) -> list[int]:
         subnets = []
         no_of_nets = self.get_no_of_subnets(target_prefix=target_prefix)
