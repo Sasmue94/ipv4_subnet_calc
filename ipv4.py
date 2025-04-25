@@ -1,16 +1,16 @@
 import re
 class IPv4:
     def __init__(self, ip: str, prefix: int):
-        self.ip = ip
-        self.octet_list = ip.split(".")
-        self.prefix = prefix
-        self.__bitlength = 32
-        self.__pattern = re.compile(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
+        self.ip: str = ip
+        self.octet_list: list[str] = ip.split(".")
+        self.prefix: int = prefix
+        self.__bitlength: int = 32
+        self.__pattern: re.Pattern = re.compile(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
     
     def set_ip(self, ip: str):
         if bool(self.__pattern.match(ip)):
-            self.ip = ip
-            self.octet_list = ip.split(".")
+            self.ip: str = ip
+            self.octet_list: list[str] = ip.split(".")
         else:
             raise ValueError(f"{ip} is not a valid ip in range of 0.0.0.0 - 255.255.255.255")
     
@@ -28,16 +28,16 @@ class IPv4:
             raise IndexError("Index out of range of ipv4: 0 - 3")
     
     # returns ip in binary
-    def get_bin_ip(self):
-        parts = []
+    def get_bin_ip(self) -> list[str]:
+        parts: list[str] = []
         for e in self.octet_list:
             parts.append("{0:08b}".format(int(e)))
         return parts
     
     # return Net ID of current IP-Address
     def get_net_id(self) -> str:
-        mask = self.get_bin_mask()
-        idOctets = ""
+        mask: list[str] = self.get_bin_mask()
+        idOctets: str = ""
         for idx, e in enumerate(self.octet_list):
             idOctets += str(int(self.octet_list[idx]) & int(mask[idx], base=2))
             if idx < 3:
@@ -46,17 +46,17 @@ class IPv4:
     
     # return Net ID of current IP in binary
     def get_net_id_bin(self) -> list[str]:
-        net_id = self.get_net_id().split(".")
+        net_id: str = self.get_net_id().split(".")
         for idx, oct in enumerate(net_id):
             net_id[idx] = "{0:08b}".format(int(oct))
         return net_id
     
     # return subnetmask as binary
     def get_bin_mask(self) -> list[str]:
-        zeros = self.__bitlength - self.prefix
-        netmask = self.prefix
-        convertedMask = []
-        octet = ""
+        zeros: int = self.__bitlength - self.prefix
+        netmask: int = self.prefix
+        convertedMask: list = []
+        octet: str = ""
         while netmask > 0 or zeros > 0:
             if netmask > 0:
                 octet = octet + "1"
@@ -71,8 +71,8 @@ class IPv4:
     
     # return subnet mask in decimal form
     def get_dec_mask(self) -> str:
-        mask = self.get_bin_mask()
-        mask_octets = ""
+        mask: list[str] = self.get_bin_mask()
+        mask_octets: str = ""
         for idx, e in enumerate(mask):
             mask_octets += str(int(e, base=2))
             if idx < 3:
@@ -95,9 +95,9 @@ class IPv4:
     
     # return given prefix to binary subnet mask
     def convert_prefix_to_bin(self, mask: int) -> list[str]:
-        zeros = self.__bitlength - mask
-        convertedMask = []
-        octet = ""
+        zeros: int = self.__bitlength - mask
+        convertedMask: list = []
+        octet: str = ""
         while mask > 0 or zeros > 0:
             if mask > 0:
                 octet = octet + "1"
@@ -112,19 +112,19 @@ class IPv4:
 
     # returns a list of subnets given a IP address, prefix and target prefix
     def subnet(self, target_prefix: int) -> list[int]:
-        subnets = []
-        no_of_nets = self.get_no_of_subnets(target_prefix=target_prefix)
-        net_size = self.get_target_net_size(target_prefix=target_prefix)
-        net_id_list = self.get_net_id_bin()
-        net_id_bin = ""
+        subnets: list = []
+        no_of_nets: int = self.get_no_of_subnets(target_prefix=target_prefix)
+        net_size: int = self.get_target_net_size(target_prefix=target_prefix)
+        net_id_list: list = self.get_net_id_bin()
+        net_id_bin: str = ""
         for oct in net_id_list:
             net_id_bin += oct
-        i = 0
+        i: int = 0
         net_id_bin = int(net_id_bin, 2)
         while i < no_of_nets:
             suffix = i * net_size
-            subnet = "{0:032b}".format(int(net_id_bin | suffix))
-            subnet = f"{int(subnet[0:8], 2)}.{int(subnet[8:16], 2)}.{int(subnet[16:24], 2)}.{int(subnet[24:32], 2)} /{target_prefix}"
+            subnet: str = "{0:032b}".format(int(net_id_bin | suffix))
+            subnet: str = f"{int(subnet[0:8], 2)}.{int(subnet[8:16], 2)}.{int(subnet[16:24], 2)}.{int(subnet[24:32], 2)} /{target_prefix}"
             subnets.append(subnet)
             i += 1   
 
