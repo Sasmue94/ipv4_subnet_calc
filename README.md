@@ -1,13 +1,5 @@
 # ipv4_subnet_calc
-Python / Streamlit subnetting calculator
-
-# xiv_profit_maximizer
-xiv profit maximizer to minimize crafting cost and maximize profits when crafting.
-shows material sources and cheapest possible combination of buyouts and visualizes
-shopping data.
-
-uses data from xivapi (xivapi.com) and universalis (universalis.app)
-consider supporting those, without them, this project wouldn't be possible.
+Subnetting calculator, shows new subnets after changing subnet mask / prefix
 
 # installation:
 
